@@ -13,6 +13,23 @@ from fastapi.staticfiles import StaticFiles
 # Import the methodology verification module
 from src.verification.validate_record import validate_record, REQUIRED_FIELDS
 
+# ZeroGPU Support for Hugging Face Spaces
+try:
+    import spaces
+    has_spaces = True
+except ImportError:
+    has_spaces = False
+
+def gpu_decorate(fn):
+    if has_spaces:
+        return spaces.GPU(fn)
+    return fn
+
+@gpu_decorate
+def zerogpu_startup_check():
+    """Satisfies Hugging Face ZeroGPU @spaces.GPU startup inspection."""
+    return "ZeroGPU ready"
+
 # Initial audited evidence dataset
 INITIAL_RECORDS = [
     {
@@ -321,4 +338,4 @@ if os.path.exists("dist"):
     demo.app.mount("/web_app", StaticFiles(directory="dist", html=True), name="web_app")
 
 if __name__ == "__main__":
-    demo.launch(server_port=7860)
+    demo.launch()

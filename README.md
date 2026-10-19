@@ -51,21 +51,34 @@ Hugging Face will automatically build the included `Dockerfile` and launch your 
 
 ---
 
-## Deploying to GitHub Pages (Alternative)
+## Deploying to GitHub Pages (Live in 30 Seconds)
 
-This project can also run directly on GitHub Pages:
+The project includes a pre-compiled `/docs` folder and `.nojekyll` file so it runs live on GitHub Pages with zero build steps or server requirements.
+
+### Quickest Method: Deploy from `/docs` folder (Recommended)
+
 1. Create a repository on [GitHub](https://github.com/new).
 2. Push your project code:
    ```bash
    git init
    git add .
-   git commit -m "Deploy to GitHub"
+   git commit -m "Deploy Open-Source AI Standardisation Observatory"
    git branch -M main
    git remote add origin https://github.com/<YOUR-USERNAME>/<YOUR-REPO-NAME>.git
    git push -u origin main
    ```
-3. In GitHub repo **Settings** → **Pages**, select **GitHub Actions** under *Source*.
-4. The included `.github/workflows/deploy.yml` workflow will automatically build and publish the live site.
+3. In your GitHub repository:
+   - Go to **Settings** → **Pages** (in the left sidebar).
+   - Under **Build and deployment** → **Source**, keep **Deploy from a branch**.
+   - Under **Branch**, select **`main`** and choose the **`/docs`** folder from the dropdown.
+   - Click **Save**.
+4. Your observatory will be live at:
+   `https://<YOUR-USERNAME>.github.io/<YOUR-REPO-NAME>/`
+
+### Alternative Method: Deploy via GitHub Actions
+If you prefer automated CI/CD builds on every commit:
+- Under **Settings** → **Pages** → **Source**, select **GitHub Actions**.
+- The included `.github/workflows/deploy.yml` workflow will automatically build Vite and deploy the site.
 
 ---
 

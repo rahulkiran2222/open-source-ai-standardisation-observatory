@@ -406,14 +406,44 @@ git push -u origin main --force`}
               </ol>
             </div>
 
-            {/* GitHub Pages Option */}
-            <div className="p-3.5 bg-white border border-[#E7E3DC] rounded-lg space-y-2">
-              <span className="font-semibold text-[#1C1917]">
-                Option B: Publish to GitHub Pages
-              </span>
-              <p className="text-[#57534E] text-[11px]">
-                Create a repo on GitHub, push the code, then in <strong>Settings</strong> → <strong>Pages</strong>, select <strong>GitHub Actions</strong>. The included <code>.github/workflows/deploy.yml</code> automatically builds and deploys your site!
-              </p>
+            {/* GitHub Pages Option (Primary) */}
+            <div className="p-3.5 bg-white border border-[#E7E3DC] rounded-lg space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-[#1C1917] flex items-center gap-1.5">
+                  <span>Deploy to GitHub Pages (Fastest: Zero-Build via /docs)</span>
+                </span>
+                <span className="text-[11px] font-mono text-[#166534] bg-[#F0FDF4] px-2 py-0.5 rounded border border-[#BBF7D0]">
+                  Pre-compiled in ZIP
+                </span>
+              </div>
+              <ol className="list-decimal list-inside space-y-1.5 text-[#57534E] leading-relaxed">
+                <li>
+                  Create a new repo on <a href="https://github.com/new" target="_blank" rel="noreferrer" className="text-[#9A3412] underline">GitHub</a>.
+                </li>
+                <li>
+                  Unzip the archive and push all files:
+                  <pre className="mt-1 p-2.5 bg-[#1C1917] text-[#FAF8F5] rounded text-[11px] font-mono overflow-x-auto select-all">
+{`git init
+git add .
+git commit -m "Deploy Open-Source AI Standardisation Observatory"
+git branch -M main
+git remote add origin https://github.com/<YOUR-USERNAME>/<YOUR-REPO>.git
+git push -u origin main`}
+                  </pre>
+                </li>
+                <li>
+                  In your GitHub repository, open <strong>Settings</strong> → <strong>Pages</strong>.
+                </li>
+                <li>
+                  Under <em>Build and deployment</em> → <strong>Source</strong>: Keep <strong>Deploy from a branch</strong>.
+                </li>
+                <li>
+                  Under <strong>Branch</strong>: Select <strong>`main`</strong> and select the <strong>`/docs`</strong> folder from the dropdown, then click <strong>Save</strong>!
+                </li>
+                <li>
+                  Done! Your site will be live in 30 seconds at <code>https://&lt;YOUR-USERNAME&gt;.github.io/&lt;YOUR-REPO&gt;/</code>.
+                </li>
+              </ol>
             </div>
           </div>
         )}
