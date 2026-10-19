@@ -1,10 +1,75 @@
+---
+title: Open-Source AI Standardisation Observatory
+emoji: 🏛️
+colorFrom: yellow
+colorTo: red
+sdk: gradio
+sdk_version: 5.20.1
+app_file: app.py
+pinned: false
+---
+
 # Open-Source AI Standardisation Observatory
 
 An auditable research engine, evidence database, and interactive network observatory investigating open-source AI participation in global standardisation and European regulatory processes (e.g., CEN-CENELEC JTC 21, ISO/IEC JTC 1/SC 42, NIST AISIC, and the EU AI Act).
 
 ---
 
-## Quickstart
+## Deploying to Hugging Face Spaces (Recommended)
+
+Hugging Face Spaces provides free, instant cloud hosting with custom subdomains (e.g. `https://huggingface.co/spaces/<your-username>/ai-standardisation-observatory`).
+
+### Method 1: Push via Git (Automated Docker Build)
+
+1. Go to [huggingface.co/new-space](https://huggingface.co/new-space).
+2. Set a **Space name** (e.g. `ai-standardisation-observatory`).
+3. Under **Space SDK**, select **Docker** (Blank template).
+4. Set Space hardware to **CPU Basic** (Free).
+5. Click **Create Space**.
+6. On your computer, inside your extracted project directory, run:
+   ```bash
+   git init
+   git add .
+   git commit -m "Deploy to Hugging Face Spaces"
+   git branch -M main
+   git remote add origin https://huggingface.co/spaces/<YOUR-HF-USERNAME>/<YOUR-SPACE-NAME>
+   git push -u origin main --force
+   ```
+*(When prompted for password, use your Hugging Face [Access Token](https://huggingface.co/settings/tokens) with "Write" permissions).*
+
+Hugging Face will automatically build the included `Dockerfile` and launch your live application on port 7860!
+
+---
+
+### Method 2: Browser Upload (No Git / CLI required)
+
+1. Create a Space on Hugging Face with **Docker** SDK.
+2. In your Space, click the **Files** tab.
+3. Click **Add file** → **Upload files**.
+4. Drag and drop all project files from the unzipped archive.
+5. Click **Commit changes to main**. Hugging Face will automatically build and start the app.
+
+---
+
+## Deploying to GitHub Pages (Alternative)
+
+This project can also run directly on GitHub Pages:
+1. Create a repository on [GitHub](https://github.com/new).
+2. Push your project code:
+   ```bash
+   git init
+   git add .
+   git commit -m "Deploy to GitHub"
+   git branch -M main
+   git remote add origin https://github.com/<YOUR-USERNAME>/<YOUR-REPO-NAME>.git
+   git push -u origin main
+   ```
+3. In GitHub repo **Settings** → **Pages**, select **GitHub Actions** under *Source*.
+4. The included `.github/workflows/deploy.yml` workflow will automatically build and publish the live site.
+
+---
+
+## Running Locally
 
 ### 1. Install Dependencies
 ```bash
@@ -17,49 +82,9 @@ npm run dev
 ```
 Open `http://localhost:3000` in your web browser.
 
-### 3. Build for Production
-```bash
-npm run build
-```
-The optimized static build will be placed into the `dist/` directory.
-
-### 4. Run Python Verification Tests
+### 3. Run Python Verification Tests
 ```bash
 python3 tests/test_validation.py
 # or using pytest
 pytest tests/test_validation.py
 ```
-
----
-
-## Deploying to GitHub Pages
-
-This project is already pre-configured for GitHub Pages:
-- `vite.config.ts` includes `base: './'` for relative sub-path asset resolution.
-- `.github/workflows/deploy.yml` is included for automated zero-config deployments.
-
-### Steps to publish on GitHub:
-
-1. Create a new repository on [GitHub](https://github.com/new).
-2. Push your project code:
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit of Open-Source AI Standardisation Observatory"
-   git branch -M main
-   git remote add origin https://github.com/<YOUR-USERNAME>/<YOUR-REPO-NAME>.git
-   git push -u origin main
-   ```
-3. Enable GitHub Pages in your repository settings:
-   - Go to your repository on GitHub.
-   - Click **Settings** → **Pages** (under "Code and automation").
-   - Under **Build and deployment** → **Source**, select **GitHub Actions**.
-4. The workflow in `.github/workflows/deploy.yml` will run automatically and deploy your site to `https://<YOUR-USERNAME>.github.io/<YOUR-REPO-NAME>/`.
-
----
-
-## Architecture
-
-1. **Evidence Database**: Structured taxonomy of entities, source URLs, verbatim passages, and audit statuses (`candidate`, `documented`, `independently_verified`, `gap`).
-2. **Research Engine**: Rigorous validation preventing false attribution of committee membership from repository links alone.
-3. **Interactive Observatory**: SVG network graph with quadrant sectors, researcher working table, candidate retrieval aid, and exportable research reports.
