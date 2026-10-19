@@ -1,55 +1,15 @@
-"""
-Validation Engine for Open-Source AI Standardisation Observatory Evidence Records.
-
-Implements the validate_record function to enforce the presence of required fields:
-- project
-- institution_or_process
-- relationship_type
-- evidence_status
-- source_url
-as specified in Component 3 of the methodology.
-"""
-
-REQUIRED_FIELDS = [
-    "project",
-    "institution_or_process",
-    "relationship_type",
-    "evidence_status",
-    "source_url",
-]
-
-
-def validate_record(record):
-    """
-    Validates that an evidence record contains all mandatory fields with non-empty values.
-
-    Args:
-        record (dict): Candidate relationship record to validate.
-
-    Returns:
-        dict: A dictionary containing:
-            - 'valid' (bool): True if all required fields are present and non-empty.
-            - 'missing_fields' (list): List of required fields that are missing or empty.
-    """
-    if not isinstance(record, dict):
-        return {
-            "valid": False,
-            "missing_fields": list(REQUIRED_FIELDS),
-        }
-
-    missing = [
-        field
-        for field in REQUIRED_FIELDS
-        if not str(record.get(field) or "").strip()
-    ]
-
-    if missing:
-        return {
-            "valid": False,
-            "missing_fields": missing,
-        }
-
-    return {
-        "valid": True,
-        "missing_fields": [],
-    }
+from urllib.parse import urlparse
+RELATIONSHIP_TYPES={"formal_membership","technical_contribution","consultation_response","documented_citation","declared_alignment","contextual_relevance","unresolved"}
+STATUSES={"independently_verified","documented","candidate","gap"}
+def validate_record(r):
+ e=[]
+ for k in ("project","institution_or_process","relationship_type","evidence_status","audit_notes"):
+  if not str(r.get(k,"")).strip(): e.append(f"{k} is required")
+ if r.get("relationship_type") not in RELATIONSHIP_TYPES:e.append("invalid relationship_type")
+ if r.get("evidence_status") not in STATUSES:e.append("invalid evidence_status")
+ u=str(r.get("source_url","")).strip()
+ if u and (urlparse(u).scheme not in {"http","https"} or not urlparse(u).netloc):e.append("source_url must be absolute HTTP(S)")
+ if r.get("evidence_status")=="independently_verified":
+  if not u:e.append("independently_verified requires source_url")
+  if not str(r.get("source_passage","")).strip():e.append("independently_verified requires source_passage")
+ return e
