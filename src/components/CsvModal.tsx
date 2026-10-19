@@ -26,7 +26,7 @@ export const CsvModal: React.FC<CsvModalProps> = ({
   records,
   onImportRecords,
 }) => {
-  const [activeTab, setActiveTab] = useState<'export' | 'import' | 'template'>('export');
+  const [activeTab, setActiveTab] = useState<'export' | 'import' | 'template' | 'github'>('export');
   const [csvInput, setCsvInput] = useState('');
   const [importResult, setImportResult] = useState<{
     importedCount: number;
@@ -162,6 +162,20 @@ export const CsvModal: React.FC<CsvModalProps> = ({
             }`}
           >
             Download Schema Template
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveTab('github');
+              setImportResult(null);
+            }}
+            className={`px-4 py-2 font-medium border-b-2 transition-colors cursor-pointer ${
+              activeTab === 'github'
+                ? 'border-[#9A3412] text-[#1C1917] font-semibold'
+                : 'border-transparent text-[#57534E] hover:text-[#1C1917]'
+            }`}
+          >
+            GitHub & Project ZIP
           </button>
         </div>
 
@@ -328,6 +342,62 @@ export const CsvModal: React.FC<CsvModalProps> = ({
                 <Download className="w-3.5 h-3.5" />
                 <span>Download Blank CSV Template</span>
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* GitHub & Project ZIP Tab */}
+        {activeTab === 'github' && (
+          <div className="space-y-4 text-xs">
+            <div className="p-3.5 bg-[#FEF3C7]/60 border border-[#FCD34D] rounded-lg flex items-start justify-between gap-3">
+              <div>
+                <h3 className="font-semibold text-[#78350F] text-xs">
+                  Complete Project ZIP Archive
+                </h3>
+                <p className="text-[#92400E] mt-0.5 text-[11px] leading-relaxed">
+                  Contains all frontend code, Python verification test suite, GitHub Actions deploy workflow, configuration files, and comprehensive documentation ready for git push.
+                </p>
+              </div>
+
+              <a
+                href="./open-source-ai-standardisation-observatory.zip"
+                download="open-source-ai-standardisation-observatory.zip"
+                className="px-3.5 py-1.5 font-semibold text-white bg-[#78350F] hover:bg-[#92400E] rounded transition-colors cursor-pointer flex items-center gap-1.5 shrink-0"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Download ZIP (86 KB)</span>
+              </a>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="font-semibold text-[#1C1917]">
+                Quick Guide: Publish Live on GitHub Pages in 4 Steps
+              </h4>
+              <ol className="list-decimal list-inside space-y-2 text-[#57534E] leading-relaxed">
+                <li>
+                  <strong>Extract the ZIP file</strong> into a new directory on your computer.
+                </li>
+                <li>
+                  <strong>Initialize Git & Push to GitHub:</strong>
+                  <pre className="mt-1 p-2.5 bg-[#1C1917] text-[#FAF8F5] rounded text-[11px] font-mono overflow-x-auto select-all">
+{`git init
+git add .
+git commit -m "Initial commit of Open-Source AI Standardisation Observatory"
+git branch -M main
+git remote add origin https://github.com/<YOUR-USERNAME>/<YOUR-REPO>.git
+git push -u origin main`}
+                  </pre>
+                </li>
+                <li>
+                  <strong>Enable GitHub Pages with GitHub Actions:</strong>
+                  <p className="mt-0.5 text-[11px] text-[#78716C]">
+                    In your GitHub repository, open <strong>Settings</strong> → <strong>Pages</strong> → under <em>Build and deployment</em>, set Source to <strong>GitHub Actions</strong>.
+                  </p>
+                </li>
+                <li>
+                  <strong>Done!</strong> The included <code>.github/workflows/deploy.yml</code> will automatically build and publish your site at <code>https://&lt;YOUR-USERNAME&gt;.github.io/&lt;YOUR-REPO&gt;/</code>.
+                </li>
+              </ol>
             </div>
           </div>
         )}
