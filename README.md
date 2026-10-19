@@ -1,33 +1,69 @@
-# Open-Source AI Standardisation Observatory — Research Prototype v0.1
+# Open-Source AI Standardisation Observatory
 
-A self-contained browser prototype for demonstrating an evidence-led workflow to study documented participation by open-source AI projects in formal standardisation. It is a proof of concept, not completed empirical research.
+**Version:** 0.1  
+**Status:** Research prototype / proof of concept
 
-## Quick start (recommended)
+## Overview
 
-1. Extract the ZIP completely (do not try to run `index.html` from inside the ZIP preview).
-2. Open the extracted `open_source_ai_standardisation_observatory` folder.
-3. Double-click `index.html` to open it in a modern browser.
-4. Try the tabs: Overview, Network explorer, Evidence register, Research design, and Explain the project.
-5. In Evidence register, click **Load sample records**, then try **Export evidence CSV**.
+The Open-Source AI Standardisation Observatory is an interactive prototype for investigating how open-source AI projects engage with formal standardisation and governance institutions.
 
-## If double-clicking does not work
+It is designed to support a transparent research workflow: identifying candidate actors and relationships, recording source evidence, distinguishing direct participation from contextual relevance, and documenting evidence gaps.
 
-Run a tiny local server from inside the extracted project folder:
+The prototype does not claim to represent a complete or independently verified network.
 
-- **macOS / Linux:** open Terminal in the folder and run `python3 -m http.server 8000`
-- **Windows:** open Command Prompt in the folder and run `py -m http.server 8000` (or `python -m http.server 8000`)
+## Features
 
-Then open `http://localhost:8000` in your browser. Keep the terminal window open while testing; press `Ctrl+C` to stop the server.
+- **Overview dashboard:** Research questions, seed entities, and evidence coverage.
+- **Network explorer:** Interactive entity map with search, type filters, and node details.
+- **Evidence register:** Searchable records with documented, contextual, and evidence-gap categories.
+- **CSV import and export:** Import evidence records and export the current register.
+- **Sample-data tools:** Download example records and a blank CSV template.
+- **Candidate matcher:** Keyword-based matching to identify records for manual review.
+- **Research design:** Suggested coding procedures, variables, and verification steps.
+- **Project briefing:** A concise explanation of the research idea and its limitations.
 
-## Included
+## Research integrity and limitations
 
-- `index.html` — interactive, responsive prototype.
-- `data/evidence_template.csv` — expected data schema.
-- `data/demo_evidence.csv` — illustrative test records only.
-- `docs/CODEBOOK.md` — evidence and status definitions.
-- `docs/RESEARCH_PROTOCOL.md` — proposed study design.
-- `tests/validate_csv.py` — standard-library CSV validator.
+This is a research instrument prototype, not a completed empirical study.
 
-## Research integrity
+- Seed records and network relationships have not all been independently audited.
+- A source page being linked does not mean that every associated claim has been verified.
+- A keyword match does not establish formal participation, standards compliance, or certification.
+- An evidence gap means that a relationship has not been established in the current dataset; it does not prove that no relationship exists.
+- The current prototype has no backend or live data feed.
 
-The seed records and network edges are unaudited. A source URL alone does not verify a claim. Importing a record never counts as independent verification. Do not infer standards participation from repository presence, an open-source licence, topical similarity, or policy context. Audit each claim and record the exact source passage and access date before presenting findings. This is not an official TU Berlin project or a compliance tool.
+Do not present the current network as verified empirical findings.
+
+## Evidence CSV schema
+
+The template uses the following columns:
+
+`project, institution_or_process, relationship_type, evidence_status, source_url, source_passage, access_date, notes`
+
+For each candidate relationship, record:
+
+1. The project and institution or standard-setting process.
+2. The specific relationship being investigated.
+3. The original source URL.
+4. The exact passage supporting the claim.
+5. The date the source was accessed.
+6. The coding decision and any limitations.
+
+Imported status labels are not independent verification.
+
+## Recommended next milestone
+
+Conduct a manual audit of **5–8 candidate relationships** before expanding the network.
+
+For each candidate, preserve the source passage, access date, relationship classification, decision rationale, and unresolved evidence gaps. Publish the audited evidence register and a concise codebook before making broader network claims.
+
+## Technical notes
+
+- Single-file HTML, CSS, and JavaScript interface.
+- No server installation required for the core prototype.
+- No backend database or live data integration.
+- Keyword matching is intended for research triage and human review.
+
+## Research principle
+
+**No relationship should be treated as a finding until the underlying evidence has been checked and the coding decision documented.**
