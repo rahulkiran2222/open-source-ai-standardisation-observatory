@@ -1,3 +1,0 @@
-﻿project,institution_or_process,relationship_type,evidence_status,source_url,source_passage,access_date,notes
-DEMO — AI standardisation context,European Commission → AI standardisation process,contextual relevance,context,https://digital-strategy.ec.europa.eu/en/policies/ai-act-standardisation,,,Demo only; verify the exact source passage.
-DEMO — participation not established,PyTorch → formal AI standard-setting body,evidence gap,gap,https://github.com/pytorch/pytorch,,,Candidate project only; no participation claim is made.
