@@ -103,13 +103,23 @@ export const TopBar: React.FC<TopBarProps> = ({
         </nav>
 
         {/* Zone 3: Primary Actions */}
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-2 shrink-0">
+          <a
+            href="./open-source-ai-standardisation-observatory.zip"
+            download="open-source-ai-standardisation-observatory.zip"
+            className="px-3 py-1.5 text-xs font-medium text-[#78350F] hover:text-[#1C1917] bg-[#FEF3C7] hover:bg-[#FDE68A] border border-[#FCD34D] rounded-md transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1.5 shadow-2xs"
+            title="Download full project repository as .zip for GitHub & GitHub Pages"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Download ZIP</span>
+          </a>
+
           <button
             onClick={onOpenCsvModal}
             className="px-3 py-1.5 text-xs font-medium text-[#57534E] hover:text-[#1C1917] bg-[#F2EDE4]/70 hover:bg-[#EBE4D8] border border-[#DDD6C8] rounded-md transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1.5"
-            title="Import or Export CSV Dataset"
+            title="Import or Export CSV Dataset & GitHub Setup"
           >
-            <Download className="w-3.5 h-3.5" />
+            <Database className="w-3.5 h-3.5" />
             <span>CSV Data</span>
           </button>
 
