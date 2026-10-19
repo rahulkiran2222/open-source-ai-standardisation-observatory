@@ -15,6 +15,7 @@ OUTPUT_ZIP = os.path.join(OUTPUT_DIR, "open-source-ai-standardisation-observator
 EXCLUDE_DIRS = {
     "node_modules",
     ".git",
+    "dist",
     ".aistudio",
     "__pycache__",
     ".pytest_cache",

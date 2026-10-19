@@ -3,10 +3,10 @@ title: Open-Source AI Standardisation Observatory
 emoji: 🏛️
 colorFrom: yellow
 colorTo: red
-sdk: gradio
-sdk_version: 5.20.1
-app_file: app.py
+sdk: docker
+app_port: 7860
 pinned: false
+license: apache-2.0
 ---
 
 # Open-Source AI Standardisation Observatory
