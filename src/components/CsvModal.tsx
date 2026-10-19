@@ -346,58 +346,74 @@ export const CsvModal: React.FC<CsvModalProps> = ({
           </div>
         )}
 
-        {/* GitHub & Project ZIP Tab */}
+        {/* GitHub & Hugging Face Tab */}
         {activeTab === 'github' && (
           <div className="space-y-4 text-xs">
             <div className="p-3.5 bg-[#FEF3C7]/60 border border-[#FCD34D] rounded-lg flex items-start justify-between gap-3">
               <div>
                 <h3 className="font-semibold text-[#78350F] text-xs">
-                  Complete Project ZIP Archive
+                  Complete Project ZIP Archive (Hugging Face & GitHub Ready)
                 </h3>
                 <p className="text-[#92400E] mt-0.5 text-[11px] leading-relaxed">
-                  Contains all frontend code, Python verification test suite, GitHub Actions deploy workflow, configuration files, and comprehensive documentation ready for git push.
+                  Contains all frontend code, Python verification engine & test suite, pre-configured <code>Dockerfile</code> for Hugging Face Spaces (port 7860), GitHub Actions deploy workflow, and documentation.
                 </p>
               </div>
 
               <a
                 href="./open-source-ai-standardisation-observatory.zip"
                 download="open-source-ai-standardisation-observatory.zip"
-                className="px-3.5 py-1.5 font-semibold text-white bg-[#78350F] hover:bg-[#92400E] rounded transition-colors cursor-pointer flex items-center gap-1.5 shrink-0"
+                className="px-3.5 py-1.5 font-semibold text-white bg-[#78350F] hover:bg-[#92400E] rounded transition-colors cursor-pointer flex items-center gap-1.5 shrink-0 shadow-xs"
               >
                 <Download className="w-3.5 h-3.5" />
-                <span>Download ZIP (86 KB)</span>
+                <span>Download ZIP</span>
               </a>
             </div>
 
-            <div className="space-y-2">
-              <h4 className="font-semibold text-[#1C1917]">
-                Quick Guide: Publish Live on GitHub Pages in 4 Steps
-              </h4>
-              <ol className="list-decimal list-inside space-y-2 text-[#57534E] leading-relaxed">
+            {/* Hugging Face Option */}
+            <div className="p-3.5 bg-white border border-[#E7E3DC] rounded-lg space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-[#1C1917] flex items-center gap-1.5">
+                  <span>Option A: Deploy to Hugging Face Spaces (Recommended for AI Research)</span>
+                </span>
+                <span className="text-[11px] font-mono text-[#166534] bg-[#F0FDF4] px-2 py-0.5 rounded border border-[#BBF7D0]">
+                  Free Cloud Hosting
+                </span>
+              </div>
+              <ol className="list-decimal list-inside space-y-1.5 text-[#57534E] leading-relaxed">
                 <li>
-                  <strong>Extract the ZIP file</strong> into a new directory on your computer.
+                  Create a new Space at <a href="https://huggingface.co/new-space" target="_blank" rel="noreferrer" className="text-[#9A3412] underline">huggingface.co/new-space</a>.
                 </li>
                 <li>
-                  <strong>Initialize Git & Push to GitHub:</strong>
+                  Select <strong>Docker</strong> as the Space SDK (Hardware: <em>CPU Basic · Free</em>).
+                </li>
+                <li>
+                  Unzip the downloaded archive and push to Hugging Face:
                   <pre className="mt-1 p-2.5 bg-[#1C1917] text-[#FAF8F5] rounded text-[11px] font-mono overflow-x-auto select-all">
 {`git init
 git add .
-git commit -m "Initial commit of Open-Source AI Standardisation Observatory"
+git commit -m "Deploy Open-Source AI Standardisation Observatory"
 git branch -M main
-git remote add origin https://github.com/<YOUR-USERNAME>/<YOUR-REPO>.git
-git push -u origin main`}
+git remote add origin https://huggingface.co/spaces/<YOUR-USERNAME>/<YOUR-SPACE-NAME>
+git push -u origin main --force`}
                   </pre>
-                </li>
-                <li>
-                  <strong>Enable GitHub Pages with GitHub Actions:</strong>
-                  <p className="mt-0.5 text-[11px] text-[#78716C]">
-                    In your GitHub repository, open <strong>Settings</strong> → <strong>Pages</strong> → under <em>Build and deployment</em>, set Source to <strong>GitHub Actions</strong>.
+                  <p className="text-[11px] text-[#78716C] mt-1">
+                    <em>(When asked for password, use your Hugging Face Access Token from Settings → Access Tokens).</em>
                   </p>
                 </li>
                 <li>
-                  <strong>Done!</strong> The included <code>.github/workflows/deploy.yml</code> will automatically build and publish your site at <code>https://&lt;YOUR-USERNAME&gt;.github.io/&lt;YOUR-REPO&gt;/</code>.
+                  Hugging Face automatically runs the included <code>Dockerfile</code> and launches your app live on port 7860!
                 </li>
               </ol>
+            </div>
+
+            {/* GitHub Pages Option */}
+            <div className="p-3.5 bg-white border border-[#E7E3DC] rounded-lg space-y-2">
+              <span className="font-semibold text-[#1C1917]">
+                Option B: Publish to GitHub Pages
+              </span>
+              <p className="text-[#57534E] text-[11px]">
+                Create a repo on GitHub, push the code, then in <strong>Settings</strong> → <strong>Pages</strong>, select <strong>GitHub Actions</strong>. The included <code>.github/workflows/deploy.yml</code> automatically builds and deploys your site!
+              </p>
             </div>
           </div>
         )}
