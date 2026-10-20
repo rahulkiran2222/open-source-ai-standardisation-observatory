@@ -68,7 +68,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-[#1C1917] flex flex-col font-sans selection:bg-[#EAE2D5] selection:text-[#1C1917]">
-      {/* 3-Zone Top Navigation Contract */}
+      {/* 3-Zone Top Navigation Contract with Global Search */}
       <TopBar
         activeTab={activeTab}
         onTabChange={setActiveTab}
@@ -78,6 +78,15 @@ export default function App() {
         }}
         onOpenCsvModal={() => setIsCsvModalOpen(true)}
         totalRecordsCount={records.length}
+        entities={entities}
+        records={records}
+        onSelectRecord={(rec) => setSelectedRecordDetail(rec)}
+        onSelectEntity={(entityName) => handleFilterByEntity(entityName)}
+        onSearchSubmit={(query) => {
+          setRegisterSearchQuery(query);
+          setRegisterFilterStatus('all');
+          setActiveTab('register');
+        }}
       />
 
       {/* Main Container */}

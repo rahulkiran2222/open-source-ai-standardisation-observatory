@@ -13,7 +13,11 @@ import {
   X,
   FileText,
   Filter,
+  BarChart3,
+  ArrowLeftRight,
 } from 'lucide-react';
+import { StandardisationActivityTrends } from './StandardisationActivityTrends';
+import { EntityComparator } from './EntityComparator';
 
 interface NetworkExplorerProps {
   entities: Entity[];
@@ -35,6 +39,13 @@ export const NetworkExplorer: React.FC<NetworkExplorerProps> = ({
   const [zoomLevel, setZoomLevel] = useState(1);
   const [selectedEntityName, setSelectedEntityName] = useState<string | null>(null);
   const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
+  const [showComparator, setShowComparator] = useState(false);
+  const [comparatorEntityA, setComparatorEntityA] = useState<string | undefined>(undefined);
+
+  const handleOpenComparatorForEntity = (entityName: string) => {
+    setComparatorEntityA(entityName);
+    setShowComparator(true);
+  };
 
   // Build the graph using the Network Engine
   const graphData = useMemo(() => {
@@ -81,6 +92,95 @@ export const NetworkExplorer: React.FC<NetworkExplorerProps> = ({
     return edge ? edge.record : null;
   }, [selectedEdgeId, graphData.edges]);
 
+  // Entity Summary Statistics (Total records, top interaction type, verification breakdown)
+  const entityStats = useMemo(() => {
+    if (!selectedEntity || selectedEntityRecords.length === 0) {
+      return {
+        totalRecords: 0,
+        mostFrequentType: null as string | null,
+        mostFrequentTypeCount: 0,
+        mostFrequentTypePct: 0,
+        verifiedCount: 0,
+        candidateCount: 0,
+        gapCount: 0,
+        verificationPct: 0,
+        candidatePct: 0,
+        gapPct: 0,
+        topPartner: null as string | null,
+        topPartnerCount: 0,
+        latestDate: null as string | null,
+      };
+    }
+
+    const typeFreq: Record<string, number> = {};
+    const partnerFreq: Record<string, number> = {};
+    let verified = 0;
+    let candidate = 0;
+    let gap = 0;
+    let latest = '';
+
+    const nameLow = selectedEntity.name.toLowerCase();
+
+    selectedEntityRecords.forEach((r) => {
+      // Type frequency
+      typeFreq[r.relationship_type] = (typeFreq[r.relationship_type] || 0) + 1;
+
+      // Other interacting partner
+      const partner = r.project.toLowerCase() === nameLow ? r.institution_or_process : r.project;
+      partnerFreq[partner] = (partnerFreq[partner] || 0) + 1;
+
+      // Status
+      if (r.evidence_status === 'independently_verified' || r.evidence_status === 'documented') {
+        verified++;
+      } else if (r.evidence_status === 'candidate') {
+        candidate++;
+      } else if (r.evidence_status === 'gap') {
+        gap++;
+      }
+
+      // Latest date
+      const d = r.access_date || '';
+      if (d > latest) latest = d;
+    });
+
+    // Determine most frequent interaction type
+    let topType = '';
+    let topTypeCount = 0;
+    Object.entries(typeFreq).forEach(([t, count]) => {
+      if (count > topTypeCount) {
+        topType = t;
+        topTypeCount = count;
+      }
+    });
+
+    // Determine top partner
+    let topPartner = '';
+    let topPartnerCount = 0;
+    Object.entries(partnerFreq).forEach(([p, count]) => {
+      if (count > topPartnerCount) {
+        topPartner = p;
+        topPartnerCount = count;
+      }
+    });
+
+    const total = selectedEntityRecords.length;
+    return {
+      totalRecords: total,
+      mostFrequentType: topType,
+      mostFrequentTypeCount: topTypeCount,
+      mostFrequentTypePct: total > 0 ? Math.round((topTypeCount / total) * 100) : 0,
+      verifiedCount: verified,
+      candidateCount: candidate,
+      gapCount: gap,
+      verificationPct: total > 0 ? Math.round((verified / total) * 100) : 0,
+      candidatePct: total > 0 ? Math.round((candidate / total) * 100) : 0,
+      gapPct: total > 0 ? Math.round((gap / total) * 100) : 0,
+      topPartner,
+      topPartnerCount,
+      latestDate: latest || null,
+    };
+  }, [selectedEntity, selectedEntityRecords]);
+
   // Visual token helpers
   const getNodeColor = (type: EntityType) => {
     switch (type) {
@@ -123,12 +223,24 @@ export const NetworkExplorer: React.FC<NetworkExplorerProps> = ({
               Visualizing verified and candidate relationships between open-source AI projects, standards development organizations (SDOs), and European policy processes.
             </p>
           </div>
-          <div className="flex items-center gap-2 text-xs text-[#78716C]">
-            <span>Graph Source</span>
-            <span aria-hidden="true">·</span>
-            <span className="font-medium text-[#1C1917]">Audited Evidence Ledger</span>
-            <span aria-hidden="true">·</span>
-            <span>Deterministic Layout</span>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2.5 shrink-0">
+            <button
+              onClick={() => setShowComparator(!showComparator)}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md border transition-all flex items-center gap-1.5 cursor-pointer ${
+                showComparator
+                  ? 'bg-[#9A3412] text-white border-[#9A3412] shadow-xs'
+                  : 'bg-[#FDF2E9] hover:bg-[#FCE7D6] text-[#9A3412] border-[#FDBA74]'
+              }`}
+              title="Compare two entities side-by-side (records, assurance, timeline trends)"
+            >
+              <ArrowLeftRight className="w-3.5 h-3.5" />
+              <span>{showComparator ? 'Hide Comparator' : 'Entity Comparator'}</span>
+            </button>
+            <div className="flex items-center gap-2 text-xs text-[#78716C]">
+              <span>Graph Source</span>
+              <span aria-hidden="true">·</span>
+              <span className="font-medium text-[#1C1917]">Audited Evidence Ledger</span>
+            </div>
           </div>
         </div>
 
@@ -203,6 +315,18 @@ export const NetworkExplorer: React.FC<NetworkExplorerProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Entity Comparator Tool (Head-to-head records and interaction frequency trends) */}
+      {showComparator && (
+        <EntityComparator
+          entities={entities}
+          records={records}
+          onSelectRecord={onSelectRecord}
+          onFilterByEntity={onFilterByEntity}
+          initialEntityA={comparatorEntityA}
+          onClose={() => setShowComparator(false)}
+        />
+      )}
 
       {/* Control Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-white border border-[#E7E3DC] rounded-lg">
@@ -625,6 +749,120 @@ export const NetworkExplorer: React.FC<NetworkExplorerProps> = ({
                 </div>
               )}
 
+              {/* Entity Summary Statistics Panel */}
+              <div className="p-3.5 bg-[#FAF8F5] border border-[#DDD6C8] rounded-lg space-y-3">
+                <div className="flex items-center justify-between border-b border-[#E7E3DC] pb-2">
+                  <span className="text-[11px] font-semibold text-[#1C1917] uppercase tracking-wider flex items-center gap-1.5">
+                    <BarChart3 className="w-3.5 h-3.5 text-[#9A3412]" />
+                    <span>Entity Interaction Statistics</span>
+                  </span>
+                  <span className="text-[10px] font-mono text-[#78716C] bg-white px-2 py-0.5 rounded border border-[#E7E3DC]">
+                    {entityStats.totalRecords} Records
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  {/* Total Records */}
+                  <div className="p-2.5 bg-white border border-[#E7E3DC] rounded">
+                    <span className="text-[10px] text-[#78716C] uppercase font-mono block">
+                      Total Records
+                    </span>
+                    <span className="text-base font-serif font-bold text-[#1C1917] font-mono tabular-nums block">
+                      {entityStats.totalRecords}
+                    </span>
+                    <span className="text-[10px] text-[#78716C] block">
+                      audited connections
+                    </span>
+                  </div>
+
+                  {/* High-Assurance Ratio */}
+                  <div className="p-2.5 bg-white border border-[#E7E3DC] rounded">
+                    <span className="text-[10px] text-[#78716C] uppercase font-mono block">
+                      Verified Rate
+                    </span>
+                    <span className="text-base font-serif font-bold text-[#166534] font-mono tabular-nums block">
+                      {entityStats.verificationPct}%
+                    </span>
+                    <span className="text-[10px] text-[#78716C] block">
+                      {entityStats.verifiedCount} high-assurance
+                    </span>
+                  </div>
+
+                  {/* Most Frequent Interaction Type */}
+                  <div className="p-2.5 bg-white border border-[#E7E3DC] rounded col-span-2">
+                    <span className="text-[10px] text-[#78716C] uppercase font-mono block">
+                      Most Frequent Interaction Type
+                    </span>
+                    <div className="flex items-center justify-between mt-0.5">
+                      <span className="text-xs font-semibold text-[#1C1917] capitalize">
+                        {entityStats.mostFrequentType
+                          ? entityStats.mostFrequentType.replace(/_/g, ' ')
+                          : 'None recorded'}
+                      </span>
+                      {entityStats.mostFrequentTypeCount > 0 && (
+                        <span className="text-[11px] font-mono text-[#9A3412] font-medium bg-[#FDF2E9] px-1.5 py-0.5 rounded">
+                          {entityStats.mostFrequentTypeCount} ({entityStats.mostFrequentTypePct}%)
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-[10px] text-[#78716C] block mt-0.5">
+                      primary mode of standardisation engagement
+                    </span>
+                  </div>
+
+                  {/* Primary Interfacing Body */}
+                  {entityStats.topPartner && (
+                    <div className="p-2.5 bg-white border border-[#E7E3DC] rounded col-span-2">
+                      <span className="text-[10px] text-[#78716C] uppercase font-mono block">
+                        Primary Interfacing Partner / SDO
+                      </span>
+                      <div className="flex items-center justify-between mt-0.5">
+                        <span className="text-xs font-semibold text-[#1E3A8A] truncate block max-w-[190px]">
+                          {entityStats.topPartner}
+                        </span>
+                        <span className="text-[10px] font-mono text-[#78716C] bg-[#F1F5F9] px-1.5 py-0.5 rounded">
+                          {entityStats.topPartnerCount} connection{entityStats.topPartnerCount > 1 ? 's' : ''}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Evidence Assurance Profile Mini-Bar */}
+                {entityStats.totalRecords > 0 && (
+                  <div className="space-y-1 pt-1 border-t border-[#E7E3DC]">
+                    <div className="flex justify-between text-[10px] text-[#78716C]">
+                      <span>Assurance Breakdown</span>
+                      <span className={entityStats.gapCount > 0 ? 'text-[#DC2626] font-medium' : 'text-[#166534]'}>
+                        {entityStats.gapCount > 0 ? `${entityStats.gapCount} Gaps Identified` : 'Zero Gaps'}
+                      </span>
+                    </div>
+                    <div className="w-full h-2 bg-[#E7E3DC] rounded-full overflow-hidden flex">
+                      <div
+                        style={{ width: `${entityStats.verificationPct}%` }}
+                        className="bg-[#166534] h-full"
+                        title={`${entityStats.verifiedCount} Verified / Documented`}
+                      />
+                      <div
+                        style={{ width: `${entityStats.candidatePct}%` }}
+                        className="bg-[#D97706] h-full"
+                        title={`${entityStats.candidateCount} Candidate Claims`}
+                      />
+                      <div
+                        style={{ width: `${entityStats.gapPct}%` }}
+                        className="bg-[#DC2626] h-full"
+                        title={`${entityStats.gapCount} Evidence Gaps`}
+                      />
+                    </div>
+                    <div className="flex justify-between text-[9.5px] text-[#78716C] font-mono">
+                      <span className="text-[#166534]">{entityStats.verifiedCount} verified</span>
+                      <span className="text-[#D97706]">{entityStats.candidateCount} candidate</span>
+                      <span className="text-[#DC2626]">{entityStats.gapCount} gap</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {/* Connected Relationships in Observatory */}
               <div className="pt-3 border-t border-[#F2EFE9]">
                 <div className="text-xs font-semibold text-[#1C1917] uppercase tracking-wider mb-2.5">
@@ -672,7 +910,15 @@ export const NetworkExplorer: React.FC<NetworkExplorerProps> = ({
                 )}
               </div>
 
-              <div className="pt-3">
+              <div className="pt-3 space-y-2">
+                <button
+                  onClick={() => handleOpenComparatorForEntity(selectedEntity.name)}
+                  className="w-full py-2 px-3 text-xs font-semibold text-[#9A3412] bg-[#FDF2E9] hover:bg-[#FCE7D6] border border-[#FDBA74] rounded transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <ArrowLeftRight className="w-3.5 h-3.5" />
+                  <span>Compare with Another Entity</span>
+                </button>
+
                 <button
                   onClick={() => onFilterByEntity(selectedEntity.name)}
                   className="w-full py-2 px-3 text-xs font-medium text-[#1C1917] bg-[#F2EDE4] hover:bg-[#EBE4D8] border border-[#DDD6C8] rounded transition-colors cursor-pointer"
@@ -774,6 +1020,9 @@ export const NetworkExplorer: React.FC<NetworkExplorerProps> = ({
           )}
         </div>
       </div>
+
+      {/* Recharts Trends: Frequency of Standardisation Events Over Time */}
+      <StandardisationActivityTrends records={records} />
     </div>
   );
 };

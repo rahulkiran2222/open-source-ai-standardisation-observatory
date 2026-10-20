@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { RelationshipRecord, EvidenceStatus, RelationshipType } from '../types';
+import { exportRecordsToCsv } from '../utils/validation';
 import {
   Search,
   ExternalLink,
@@ -14,6 +15,10 @@ import {
   HelpCircle,
   Edit3,
   Trash2,
+  Download,
+  FileSpreadsheet,
+  FileCode,
+  ChevronDown,
 } from 'lucide-react';
 
 interface EvidenceRegisterProps {
@@ -41,6 +46,8 @@ export const EvidenceRegister: React.FC<EvidenceRegisterProps> = ({
   const [sortField, setSortField] = useState<'project' | 'status' | 'date'>('project');
   const [sortAsc, setSortAsc] = useState(true);
   const [activeGapRecord, setActiveGapRecord] = useState<RelationshipRecord | null>(null);
+  const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
+  const [exportFeedback, setExportFeedback] = useState<string | null>(null);
 
   // Filter & sort logic
   const filteredRecords = useMemo(() => {
@@ -99,6 +106,42 @@ export const EvidenceRegister: React.FC<EvidenceRegisterProps> = ({
     } else {
       setActiveGapRecord(null);
     }
+  };
+
+  const handleExportCsv = () => {
+    if (filteredRecords.length === 0) return;
+    const csvContent = exportRecordsToCsv(filteredRecords);
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const timestamp = new Date().toISOString().split('T')[0];
+    link.href = url;
+    link.setAttribute('download', `observatory_evidence_filtered_${timestamp}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    setExportDropdownOpen(false);
+    setExportFeedback(`Exported ${filteredRecords.length} filtered records as CSV`);
+    setTimeout(() => setExportFeedback(null), 3500);
+  };
+
+  const handleExportJson = () => {
+    if (filteredRecords.length === 0) return;
+    const jsonContent = JSON.stringify(filteredRecords, null, 2);
+    const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const timestamp = new Date().toISOString().split('T')[0];
+    link.href = url;
+    link.setAttribute('download', `observatory_evidence_filtered_${timestamp}.json`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    setExportDropdownOpen(false);
+    setExportFeedback(`Exported ${filteredRecords.length} filtered records as JSON`);
+    setTimeout(() => setExportFeedback(null), 3500);
   };
 
   const getStatusText = (status: EvidenceStatus) => {
@@ -161,12 +204,35 @@ export const EvidenceRegister: React.FC<EvidenceRegisterProps> = ({
             </p>
           </div>
 
-          <div className="flex items-center gap-2 text-xs text-[#78716C]">
+          <div className="flex flex-wrap items-center gap-2 text-xs text-[#78716C]">
             <span>Schema</span>
             <span aria-hidden="true">·</span>
             <span>Audited Records</span>
             <span aria-hidden="true">·</span>
-            <span className="font-mono tabular-nums">{filteredRecords.length} records shown</span>
+            <span className="font-mono tabular-nums text-[#1C1917] font-medium">
+              {filteredRecords.length} records shown
+            </span>
+
+            <div className="flex items-center gap-1 sm:ml-2">
+              <button
+                onClick={handleExportCsv}
+                disabled={filteredRecords.length === 0}
+                className="px-2 py-1 text-[11px] font-medium text-[#166534] bg-[#F0FDF4] hover:bg-[#DCFCE7] border border-[#BBF7D0] rounded transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                title={`Export ${filteredRecords.length} filtered records as CSV`}
+              >
+                <FileSpreadsheet className="w-3 h-3" />
+                <span>CSV</span>
+              </button>
+              <button
+                onClick={handleExportJson}
+                disabled={filteredRecords.length === 0}
+                className="px-2 py-1 text-[11px] font-medium text-[#1E3A8A] bg-[#EFF6FF] hover:bg-[#DBEAFE] border border-[#BFDBFE] rounded transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                title={`Export ${filteredRecords.length} filtered records as JSON`}
+              >
+                <FileCode className="w-3 h-3" />
+                <span>JSON</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -291,6 +357,56 @@ export const EvidenceRegister: React.FC<EvidenceRegisterProps> = ({
             <option value="unresolved">Unresolved</option>
           </select>
 
+          {/* Export Filtered Dropdown */}
+          <div className="relative shrink-0">
+            <button
+              onClick={() => setExportDropdownOpen(!exportDropdownOpen)}
+              disabled={filteredRecords.length === 0}
+              className={`px-3 py-1.5 text-xs font-medium border rounded transition-colors whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
+                filteredRecords.length === 0
+                  ? 'bg-[#FAF8F5] text-[#A8A29E] border-[#E7E3DC] cursor-not-allowed opacity-60'
+                  : 'bg-[#F2EDE4]/80 hover:bg-[#EBE4D8] text-[#1C1917] border-[#DDD6C8]'
+              }`}
+              title={
+                filteredRecords.length === 0
+                  ? 'No records matching current filters'
+                  : `Export ${filteredRecords.length} filtered records`
+              }
+            >
+              <Download className="w-3.5 h-3.5 text-[#57534E]" />
+              <span>Export ({filteredRecords.length})</span>
+              <ChevronDown className="w-3 h-3 text-[#78716C]" />
+            </button>
+
+            {exportDropdownOpen && (
+              <div className="absolute right-0 mt-1 w-56 bg-white border border-[#E7E3DC] rounded-lg shadow-lg py-1 z-30 text-xs">
+                <div className="px-3 py-1.5 border-b border-[#F2EDE4] text-[11px] text-[#78716C] font-mono">
+                  Export {filteredRecords.length} filtered records:
+                </div>
+                <button
+                  onClick={handleExportCsv}
+                  className="w-full text-left px-3 py-2 hover:bg-[#FAF8F5] text-[#1C1917] flex items-center gap-2.5 cursor-pointer transition-colors"
+                >
+                  <FileSpreadsheet className="w-4 h-4 text-[#166534] shrink-0" />
+                  <div>
+                    <span className="font-semibold block text-xs">Download as CSV</span>
+                    <span className="text-[10px] text-[#78716C] block leading-tight">Spreadsheet format (.csv)</span>
+                  </div>
+                </button>
+                <button
+                  onClick={handleExportJson}
+                  className="w-full text-left px-3 py-2 hover:bg-[#FAF8F5] text-[#1C1917] flex items-center gap-2.5 cursor-pointer transition-colors"
+                >
+                  <FileCode className="w-4 h-4 text-[#1E3A8A] shrink-0" />
+                  <div>
+                    <span className="font-semibold block text-xs">Download as JSON</span>
+                    <span className="text-[10px] text-[#78716C] block leading-tight">Structured array (.json)</span>
+                  </div>
+                </button>
+              </div>
+            )}
+          </div>
+
           <button
             onClick={onNewRecord}
             className="px-3 py-1.5 text-xs font-medium text-white bg-[#1C1917] hover:bg-[#292524] rounded transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0"
@@ -300,6 +416,17 @@ export const EvidenceRegister: React.FC<EvidenceRegisterProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Export Feedback Banner */}
+      {exportFeedback && (
+        <div className="p-3 bg-[#F0FDF4] border border-[#BBF7D0] rounded-lg text-xs text-[#166534] flex items-center justify-between shadow-2xs">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-[#166534] shrink-0" />
+            <span className="font-medium">{exportFeedback}</span>
+          </div>
+          <span className="text-[11px] text-[#15803D] font-mono">Download started</span>
+        </div>
+      )}
 
       {/* Main Working Table */}
       <div className="bg-white border border-[#E7E3DC] rounded-lg overflow-hidden shadow-xs">
