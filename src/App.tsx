@@ -253,29 +253,58 @@ export default function App() {
 
       {/* Editorial Footer */}
       <footer className="border-t border-[#E7E3DC] bg-[#FAF8F5] py-8 px-6 text-xs text-[#78716C]">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-serif font-medium text-[#1C1917]">
-              Open-Source AI Standardisation Observatory
-            </span>
-            <span aria-hidden="true">·</span>
-            <span>Audited Research Ledger & Network Engine</span>
+        <div className="max-w-7xl mx-auto space-y-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <span className="font-serif font-medium text-[#1C1917]">
+                Open-Source AI Standardisation Observatory
+              </span>
+              <span aria-hidden="true">·</span>
+              <span>Audited Research Ledger & Network Engine</span>
+            </div>
+
+            <div className="flex items-center gap-6">
+              <button
+                onClick={() => setActiveTab('codebook')}
+                className="hover:text-[#1C1917] transition-colors cursor-pointer"
+              >
+                Academic Defense & Codebook
+              </button>
+              <button
+                onClick={() => setIsCsvModalOpen(true)}
+                className="hover:text-[#1C1917] transition-colors cursor-pointer"
+              >
+                Download Schema
+              </button>
+              <span>Open Source Standardisation Research</span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-6">
-            <button
-              onClick={() => setActiveTab('codebook')}
-              className="hover:text-[#1C1917] transition-colors cursor-pointer"
-            >
-              Academic Defense & Codebook
-            </button>
-            <button
-              onClick={() => setIsCsvModalOpen(true)}
-              className="hover:text-[#1C1917] transition-colors cursor-pointer"
-            >
-              Download Schema
-            </button>
-            <span>Open Source Standardisation Research</span>
+          <div className="pt-3 border-t border-[#E7E3DC]/60 flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#78716C]">
+            <div className="flex items-center gap-1 font-mono uppercase text-[#9A3412] font-semibold">
+              <span>Stage 2 Modules:</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-4">
+              <a href="pages/network-analysis.html" className="hover:text-[#1C1917] transition-colors">
+                Network Analysis
+              </a>
+              <span aria-hidden="true">·</span>
+              <a href="pages/brokerage-pathways.html" className="hover:text-[#1C1917] transition-colors">
+                Brokerage & Pathways
+              </a>
+              <span aria-hidden="true">·</span>
+              <a href="pages/temporal-analysis.html" className="hover:text-[#1C1917] transition-colors">
+                Temporal Analysis
+              </a>
+              <span aria-hidden="true">·</span>
+              <a href="pages/data-quality.html" className="hover:text-[#1C1917] transition-colors">
+                Data Quality & Audit
+              </a>
+              <span aria-hidden="true">·</span>
+              <a href="pages/research-outputs.html" className="hover:text-[#1C1917] transition-colors font-medium text-[#1C1917]">
+                Research Outputs & Reproducibility
+              </a>
+            </div>
           </div>
         </div>
       </footer>

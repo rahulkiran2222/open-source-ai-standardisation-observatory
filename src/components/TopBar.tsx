@@ -15,6 +15,8 @@ import {
   CheckCircle2,
   AlertCircle,
   HelpCircle,
+  ChevronDown,
+  Layers,
 } from 'lucide-react';
 import { Entity, RelationshipRecord, EvidenceStatus } from '../types';
 
@@ -48,10 +50,12 @@ export const TopBar: React.FC<TopBarProps> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchDropdownOpen, setSearchDropdownOpen] = useState(false);
+  const [stage2DropdownOpen, setStage2DropdownOpen] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const stage2MenuRef = useRef<HTMLDivElement>(null);
 
-  // Close search dropdown on click outside
+  // Close search & stage2 dropdowns on click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -59,6 +63,12 @@ export const TopBar: React.FC<TopBarProps> = ({
         !searchContainerRef.current.contains(event.target as Node)
       ) {
         setSearchDropdownOpen(false);
+      }
+      if (
+        stage2MenuRef.current &&
+        !stage2MenuRef.current.contains(event.target as Node)
+      ) {
+        setStage2DropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -387,6 +397,108 @@ export const TopBar: React.FC<TopBarProps> = ({
             <BookOpen className="w-3.5 h-3.5 opacity-70" />
             <span>Codebook</span>
           </button>
+
+          {/* Stage 2 Modules Dropdown */}
+          <div className="relative" ref={stage2MenuRef}>
+            <button
+              onClick={() => setStage2DropdownOpen(!stage2DropdownOpen)}
+              className="whitespace-nowrap pb-0.5 border-b-2 border-transparent hover:text-[#1C1917] hover:border-[#D5CEBF] transition-all cursor-pointer flex items-center gap-1.5 text-[13px] font-medium text-[#57534E]"
+              title="Stage 2 Empirical Analysis Modules"
+            >
+              <Layers className="w-3.5 h-3.5 text-[#9A3412]" />
+              <span>Stage 2</span>
+              <span className="text-[9.5px] font-mono px-1.5 py-0.2 bg-[#FDF2E9] text-[#9A3412] border border-[#FDBA74] rounded-full font-semibold">
+                NEW
+              </span>
+              <ChevronDown className={`w-3 h-3 text-[#78716C] transition-transform ${stage2DropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {stage2DropdownOpen && (
+              <div className="absolute right-0 top-full mt-2 w-72 bg-white border border-[#E7E3DC] rounded-lg shadow-xl py-2 z-50 text-xs animate-in fade-in slide-in-from-top-1 duration-150">
+                <div className="px-3 py-1.5 border-b border-[#F2EDE4] mb-1 flex items-center justify-between">
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-[#78716C]">
+                    Stage 2 Analytical Modules
+                  </span>
+                  <span className="text-[10px] text-[#9A3412] font-semibold">Python Engine</span>
+                </div>
+                <a
+                  href="pages/network-analysis.html"
+                  className="flex items-start gap-2.5 px-3 py-2 hover:bg-[#FAF8F5] transition-colors"
+                >
+                  <span className="text-base mt-0.5">📊</span>
+                  <div>
+                    <div className="font-medium text-[#1C1917] flex items-center gap-1">
+                      <span>Network Analysis</span>
+                      <ExternalLink className="w-2.5 h-2.5 text-[#78716C]" />
+                    </div>
+                    <div className="text-[11px] text-[#78716C]">
+                      Verified graph stats, centralities & density
+                    </div>
+                  </div>
+                </a>
+                <a
+                  href="pages/brokerage-pathways.html"
+                  className="flex items-start gap-2.5 px-3 py-2 hover:bg-[#FAF8F5] transition-colors"
+                >
+                  <span className="text-base mt-0.5">🌉</span>
+                  <div>
+                    <div className="font-medium text-[#1C1917] flex items-center gap-1">
+                      <span>Brokerage & Pathways</span>
+                      <ExternalLink className="w-2.5 h-2.5 text-[#78716C]" />
+                    </div>
+                    <div className="text-[11px] text-[#78716C]">
+                      Bridge actors, cut vertices & multi-hop paths
+                    </div>
+                  </div>
+                </a>
+                <a
+                  href="pages/temporal-analysis.html"
+                  className="flex items-start gap-2.5 px-3 py-2 hover:bg-[#FAF8F5] transition-colors"
+                >
+                  <span className="text-base mt-0.5">⏱️</span>
+                  <div>
+                    <div className="font-medium text-[#1C1917] flex items-center gap-1">
+                      <span>Temporal Analysis</span>
+                      <ExternalLink className="w-2.5 h-2.5 text-[#78716C]" />
+                    </div>
+                    <div className="text-[11px] text-[#78716C]">
+                      Regulatory peaks & longitudinal timeline
+                    </div>
+                  </div>
+                </a>
+                <a
+                  href="pages/data-quality.html"
+                  className="flex items-start gap-2.5 px-3 py-2 hover:bg-[#FAF8F5] transition-colors"
+                >
+                  <span className="text-base mt-0.5">🛡️</span>
+                  <div>
+                    <div className="font-medium text-[#1C1917] flex items-center gap-1">
+                      <span>Data Quality & Audit</span>
+                      <ExternalLink className="w-2.5 h-2.5 text-[#78716C]" />
+                    </div>
+                    <div className="text-[11px] text-[#78716C]">
+                      5-field schema audit & anomaly register
+                    </div>
+                  </div>
+                </a>
+                <a
+                  href="pages/research-outputs.html"
+                  className="flex items-start gap-2.5 px-3 py-2 hover:bg-[#FAF8F5] transition-colors border-t border-[#F2EDE4] mt-1 pt-2"
+                >
+                  <span className="text-base mt-0.5">📦</span>
+                  <div>
+                    <div className="font-medium text-[#1C1917] flex items-center gap-1">
+                      <span>Research Outputs</span>
+                      <ExternalLink className="w-2.5 h-2.5 text-[#78716C]" />
+                    </div>
+                    <div className="text-[11px] text-[#78716C]">
+                      Dataset downloads, SemVer & reproducibility
+                    </div>
+                  </div>
+                </a>
+              </div>
+            )}
+          </div>
         </nav>
 
         {/* Zone 3: Primary Actions (Desktop) & Mobile Hamburger */}
@@ -542,6 +654,49 @@ export const TopBar: React.FC<TopBarProps> = ({
               <span>Codebook & Python Engine</span>
             </button>
           </nav>
+
+          {/* Stage 2 Modules Mobile Section */}
+          <div className="pt-2 border-t border-[#E7E3DC] space-y-1">
+            <div className="px-3 py-1 text-[10px] font-mono uppercase tracking-wider text-[#78716C] flex items-center justify-between">
+              <span>Stage 2 Modules (Python)</span>
+              <span className="px-1.5 py-0.2 bg-[#FDF2E9] text-[#9A3412] border border-[#FDBA74] rounded-full text-[9px] font-semibold">NEW</span>
+            </div>
+            <a
+              href="pages/network-analysis.html"
+              className="w-full px-3 py-1.5 text-xs rounded-md text-[#57534E] hover:bg-[#F2EDE4] hover:text-[#1C1917] flex items-center justify-between"
+            >
+              <span>📊 Network Analysis & Density</span>
+              <ExternalLink className="w-3 h-3 text-[#78716C]" />
+            </a>
+            <a
+              href="pages/brokerage-pathways.html"
+              className="w-full px-3 py-1.5 text-xs rounded-md text-[#57534E] hover:bg-[#F2EDE4] hover:text-[#1C1917] flex items-center justify-between"
+            >
+              <span>🌉 Brokerage & Pathways Tracer</span>
+              <ExternalLink className="w-3 h-3 text-[#78716C]" />
+            </a>
+            <a
+              href="pages/temporal-analysis.html"
+              className="w-full px-3 py-1.5 text-xs rounded-md text-[#57534E] hover:bg-[#F2EDE4] hover:text-[#1C1917] flex items-center justify-between"
+            >
+              <span>⏱️ Temporal Regulatory Analysis</span>
+              <ExternalLink className="w-3 h-3 text-[#78716C]" />
+            </a>
+            <a
+              href="pages/data-quality.html"
+              className="w-full px-3 py-1.5 text-xs rounded-md text-[#57534E] hover:bg-[#F2EDE4] hover:text-[#1C1917] flex items-center justify-between"
+            >
+              <span>🛡️ Data Quality & Audit Report</span>
+              <ExternalLink className="w-3 h-3 text-[#78716C]" />
+            </a>
+            <a
+              href="pages/research-outputs.html"
+              className="w-full px-3 py-1.5 text-xs rounded-md hover:bg-[#F2EDE4] flex items-center justify-between font-medium text-[#9A3412]"
+            >
+              <span>📦 Research Outputs & Reproducibility</span>
+              <ExternalLink className="w-3 h-3 text-[#9A3412]" />
+            </a>
+          </div>
 
           {/* Mobile action buttons row */}
           <div className="pt-2 border-t border-[#E7E3DC] flex items-center gap-2">
