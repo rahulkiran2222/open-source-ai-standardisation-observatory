@@ -16,7 +16,6 @@
 <p align="center">
   <a href="https://rahulkiran2222.github.io/open-source-ai-standardisation-observatory/">🌐 Explore the live prototype</a>
   &nbsp; · &nbsp;
-  <a href="https://github.com/rahulkiran2222/open-source-ai-standardisation-observatory">💻 View the source code</a>
 </p>
 
 ---
