@@ -104,8 +104,6 @@ The current prototype has not completed the independent audit of its seed relati
 
 🌐 **Live application:** https://rahulkiran2222.github.io/open-source-ai-standardisation-observatory/
 
-💻 **Source repository:** https://github.com/rahulkiran2222/open-source-ai-standardisation-observatory
-
 The current application is organised into five main views.
 
 ### 🏠 4.1 Overview — Research dashboard
