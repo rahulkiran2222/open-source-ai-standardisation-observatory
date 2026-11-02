@@ -366,7 +366,7 @@ This distinction is central to the project's credibility: **a working interface 
 
 ---
 
-## 🚧 8. Stage 1 — Current development phase
+## 🚧 8. Stage 1 
 
 ### Objective
 
@@ -400,7 +400,7 @@ The initial audit is a proposed next step, not a completed result.
 
 ---
 
-## 🚀 9. Stage 2 — Proposed research directions
+## 🚀 9. Stage 2 — Current Development Phase
 
 Stage 2 has not yet been implemented. The following directions are options for discussion, refinement, and prioritisation after Stage 1.
 
