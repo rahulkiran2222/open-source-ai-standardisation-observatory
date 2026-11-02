@@ -402,8 +402,6 @@ The initial audit is a proposed next step, not a completed result.
 
 ## 🚀 9. Stage 2 — Current Development Phase
 
-Stage 2 has not yet been implemented. The following directions are options for discussion, refinement, and prioritisation after Stage 1.
-
 ### 9.1 Network structure and brokerage
 
 **Research objective:** investigate whether documented actors connect otherwise disconnected parts of the open-source AI and formal standardisation landscape.
